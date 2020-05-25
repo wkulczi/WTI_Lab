@@ -1,20 +1,24 @@
 import redis
 
+
 # cnxn = RedisQueue('test', 'localhost', 6381, 0)
 
 
 class RedisQueue:
-    def __init__(self, _name='default', _host='localhost', _port=6381, _db=0):
+    _name = ""
+
+    def __init__(self, name='default', host='localhost', port=6381, db=0):
         """
         Initialize redis queue class
         Args:
             _name: Name of queue in redis, default value: 'default'
-            _host: Host adress, default value: 'localhost'
-            _port: Connection port, default value: 6381
-            _db: i don't remember, sorry
+            host: Host adress, default value: 'localhost'
+            port: Connection port, default value: 6381
+            db: i don't remember, sorry
         """
-        self.cnxn = redis.Redis(host=_host, port=_port, db=_db)
-        self.key = '%s:%s' % ("queue", _name)
+        self._name = name
+        self.cnxn = redis.Redis(host=host, port=port, db=db)
+        self.key = '%s:%s' % ("queue", name)
 
     def qsize(self):
         """
@@ -22,7 +26,7 @@ class RedisQueue:
         """
         return self.cnxn.llen(self.key)
 
-    def empty(self)->bool:
+    def empty(self) -> bool:
         """
         Returns: if redis queue is empty
         """
@@ -35,6 +39,18 @@ class RedisQueue:
             item: Item to push
         """
         self.cnxn.rpush(self.key, item)
+
+    def lrange(self, start, end):
+        """
+
+        Args:
+            start: start index for lrange
+            end: end index for lrange
+
+        Returns: all objects inside the range
+
+        """
+        return self.cnxn.lrange(self._name, start, end)
 
     def get(self, block=True, timeout=None):
         """
@@ -62,10 +78,23 @@ class RedisQueue:
         """
         self.cnxn.delete(self.key)
 
-    def get_nowait(self):
+    def ltrim(self, start, end):
         """
 
-        Returns: ¯\_(ツ)_/¯
+        Args:
+            start: start idx of ltrim value
+            end: end idx of ltrim value
+        """
+        self.cnxn.ltrim(self._name, start, end)
 
+    def flushdb(self):
+        """
+        flushes using flushdb
+        """
+        self.cnxn.flushdb()
+
+    def get_nowait(self):
+        """
+        Returns: ¯\_(ツ)_/¯
         """
         return self.get(False)
