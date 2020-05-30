@@ -14,6 +14,7 @@ def receive():
     queue = RedisQueue(name='lab2Queue')
     queue.ltrim(0, 50)
     datalist = []
+    start_time = time.time()
     try:
         while True:
             data = queue.lrange(0, 0)
@@ -22,7 +23,9 @@ def receive():
                 print(json.loads(data[0]))
                 queue.ltrim(1, -1)
             time.sleep(0.25)
-
+            if time.time() - start_time >= 10:
+                print(list_summary(datalist))
+                break
     except KeyboardInterrupt:
         print(list_summary(datalist))
 
