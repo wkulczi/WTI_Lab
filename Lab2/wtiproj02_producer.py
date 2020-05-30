@@ -9,7 +9,6 @@ def startSending():
     queue = RedisQueue(name='lab2Queue')
     queue.flushdb()
     for i in itertools.count():
-        print(i)
         queue.put(json.dumps({"iteration number": i}))
         time.sleep(0.01)
 
