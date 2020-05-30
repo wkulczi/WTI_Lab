@@ -7,7 +7,9 @@ import redis
 class RedisQueue:
     _name = ""
 
-    def __init__(self, name='default', host='localhost', port=6381, db=0):
+
+
+    def __init__(self, name='default', host='localhost', port=6381):
         """
         Initialize redis queue class
         Args:
@@ -17,7 +19,7 @@ class RedisQueue:
             db: i don't remember, sorry
         """
         self._name = name
-        self.cnxn = redis.Redis(host=host, port=port, db=db)
+        self.cnxn = redis.Redis(host=host, port=port)
         self.key = '%s:%s' % ("queue", name)
 
     def qsize(self):
@@ -50,7 +52,7 @@ class RedisQueue:
         Returns: all objects inside the range
 
         """
-        return self.cnxn.lrange(self._name, start, end)
+        return self.cnxn.lrange(self.key, start, end)
 
     def get(self, block=True, timeout=None):
         """
@@ -59,7 +61,7 @@ class RedisQueue:
             block: If block connection, default: True
             timeout: Sets timeout value, default: None
 
-        Returns: Item at the leftmost.
+        Returns: Item at the leftmost in bytes.
 
         """
         if block:
@@ -85,7 +87,7 @@ class RedisQueue:
             start: start idx of ltrim value
             end: end idx of ltrim value
         """
-        self.cnxn.ltrim(self._name, start, end)
+        self.cnxn.ltrim(self.key, start, end)
 
     def flushdb(self):
         """
