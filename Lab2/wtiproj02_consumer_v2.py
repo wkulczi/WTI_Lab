@@ -1,16 +1,21 @@
 import json
 import time
 
-from Lab1.wtiproj01_client import RedisQueue
+import sys
+import os
+sys.path.append(os.path.abspath('../Lab1'))
+
+from wtiproj01_client import RedisQueue
 
 
 def list_summary(datalist):
-    return "\nEmpty elements fetched: {0}\nNon empty elements in list: {1}\n".format(datalist.count([]),
+    return "\nRECEIVING AT 4Hz\nEmpty elements fetched: {0}\nNon empty elements in list: {1}\n".format(datalist.count([]),
                                                                                      (len(datalist) - datalist.count(
                                                                                          [])))
 
 
 def receive():
+    print("RECEIVING AT 4Hz")
     queue = RedisQueue(name='lab2Queue')
     queue.ltrim(0, 50)
     datalist = []
