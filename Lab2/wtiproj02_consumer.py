@@ -14,7 +14,6 @@ def receive():
     queue = RedisQueue(name='lab2Queue')
     queue.ltrim(0, 50)
     datalist = []
-    start_time = time.time()
     try:
         while True:
             data = queue.lrange(0, 0)
