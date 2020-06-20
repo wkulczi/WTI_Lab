@@ -83,7 +83,7 @@ def deleteRating():
         if ("userID" and "movieID") not in data:
             raise Exception("ERR, please specify userID and movieID to delete")
         controller.delete_row(data["userID"], data["movieID"])
-        return "Deleted"
+        return json.dumps({"Operation status":"Deleted"})
 
     except Exception as e:
         return str(e)
@@ -96,6 +96,7 @@ def average_all_users():
 
 
 # jak również odczyt aktualnego (również zaślepkowego, np. o losowych wartościach “udających” średnie oceny udzielone filmom poszczególnych gatunków)...
-@app.route('/avg-genre-ratings/user<userID>', methods=['GET'])
+# i mimo tego, że w zadaniu 3 jest napisane, ze ma być /user<userID> to w 4 już jest /<userID> -.-
+@app.route('/avg-genre-ratings/<userID>', methods=['GET'])
 def avg_user(userID):
     return controller.random_genre_ratings(userID=userID).to_json(orient="records")
